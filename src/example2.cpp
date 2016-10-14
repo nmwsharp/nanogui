@@ -1,5 +1,5 @@
 /*
-    src/example2.cpp -- C++ version of an example application that shows 
+    src/example2.cpp -- C++ version of an example application that shows
     how to use the form helper class. For a Python implementation, see
     '../python/example2.py'.
 
@@ -34,7 +34,20 @@ int main(int /* argc */, char ** /* argv */) {
     nanogui::init();
 
     {
-        Screen *screen = new Screen(Vector2i(500, 700), "NanoGUI test");
+        bool use_gl_4_1 = false;// Set to true to create an OpenGL 4.1 context.
+        Screen *screen = nullptr;
+
+        if (use_gl_4_1) {
+            // NanoGUI presents many options for you to utilize at your discretion.
+            // See include/nanogui/screen.h for what all of these represent.
+            screen = new Screen(Vector2i(500, 700), "NanoGUI test [GL 4.1]",
+                                /*resizable*/true, /*fullscreen*/false, /*colorBits*/8,
+                                /*alphaBits*/8, /*depthBits*/24, /*stencilBits*/8,
+                                /*nSamples*/0, /*glMajor*/4, /*glMinor*/1);
+        }
+        else {
+            screen = new Screen(Vector2i(500, 700), "NanoGUI test");
+        }
 
         bool enabled = true;
         FormHelper *gui = new FormHelper(screen);
@@ -44,9 +57,9 @@ int main(int /* argc */, char ** /* argv */) {
         gui->addVariable("string", strval);
 
         gui->addGroup("Validating fields");
-        gui->addVariable("int", ivar);
+        gui->addVariable("int", ivar)->setSpinnable(true);
         gui->addVariable("float", fvar);
-        gui->addVariable("double", dvar);
+        gui->addVariable("double", dvar)->setSpinnable(true);
 
         gui->addGroup("Complex types");
         gui->addVariable("Enumeration", enumval, enabled)
@@ -54,7 +67,7 @@ int main(int /* argc */, char ** /* argv */) {
         gui->addVariable("Color", colval);
 
         gui->addGroup("Other widgets");
-        gui->addButton("A button", [](){ std::cout << "Button pressed." << std::endl; });
+        gui->addButton("A button", []() { std::cout << "Button pressed." << std::endl; });
 
         screen->setVisible(true);
         screen->performLayout();

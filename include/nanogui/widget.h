@@ -8,6 +8,7 @@
     All rights reserved. Use of this source code is governed by a
     BSD-style license that can be found in the LICENSE.txt file.
 */
+/** \file */
 
 #pragma once
 
@@ -16,10 +17,12 @@
 
 NAMESPACE_BEGIN(nanogui)
 
-enum class Cursor;
+enum class Cursor;// do not put a docstring, this is already documented
 
 /**
- * \brief Base class of all widgets
+ * \class Widget widget.h nanogui/widget.h
+ *
+ * \brief Base class of all widgets.
  *
  * \ref Widget is the base class of all widgets in \c nanogui. It can
  * also be used as an panel to arrange an arbitrary number of child
@@ -123,12 +126,16 @@ public:
     const std::vector<Widget *> &children() const { return mChildren; }
 
     /**
-     * \brief Add a child widget to the current widget
+     * \brief Add a child widget to the current widget at
+     * the specified index.
      *
      * This function almost never needs to be called by hand,
      * since the constructor of \ref Widget automatically
      * adds the current widget to its parent
      */
+    virtual void addChild(int index, Widget *widget);
+
+    /// Convenience function which appends a widget at the end
     void addChild(Widget *widget);
 
     /// Remove a child widget by index
@@ -137,7 +144,22 @@ public:
     /// Remove a child widget by value
     void removeChild(const Widget *widget);
 
-    // Walk up the hierarchy and return the parent window
+    /// Retrieves the child at the specific position
+    const Widget* childAt(int index) const { return mChildren[index]; }
+
+    /// Retrieves the child at the specific position
+    Widget* childAt(int index) { return mChildren[index]; }
+
+    /// Returns the index of a specific child or -1 if not found
+    int childIndex(Widget* widget) const;
+
+    /// Variadic shorthand notation to construct and add a child widget
+    template<typename WidgetClass, typename... Args>
+    WidgetClass* add(const Args&... args) {
+        return new WidgetClass(this, args...);
+    }
+
+    /// Walk up the hierarchy and return the parent window
     Window *window();
 
     /// Associate this widget with an ID value (optional)
@@ -219,6 +241,7 @@ public:
 
     /// Restore the state of the widget from the given \ref Serializer instance
     virtual bool load(Serializer &s);
+
 protected:
     /// Free all resources used by the widget and any children
     virtual ~Widget();
