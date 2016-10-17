@@ -175,7 +175,8 @@ if (NANOGUI_BUILD_SHARED)
 endif()
 
 # Always use libc++ on Clang
-if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+# nsharp: only on OSX
+if (CMAKE_CXX_COMPILER_ID MATCHES "Clang" AND APPLE)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++")
   set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -stdlib=libc++ -lc++abi")
   set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -stdlib=libc++ -lc++abi")
